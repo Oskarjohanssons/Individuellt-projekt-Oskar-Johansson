@@ -17,7 +17,7 @@
 
         }
 
-        public void MainMenu ()
+        public void MainMenu()
         {
 
         }
@@ -37,6 +37,7 @@
         }
         static void Main(string[] args)
         {
+            Console.WriteLine("Hello, World!");
             Console.WriteLine("");
         }
     }
