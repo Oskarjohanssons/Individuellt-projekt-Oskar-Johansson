@@ -69,21 +69,50 @@
 
         public void MainMenu(string username)
         {
+            while(true)
+            {
+                Console.WriteLine("\nHuvudmeny:");
+                Console.WriteLine("1. Se konton och saldo");
+                Console.WriteLine("2. Överföring mellan konton");
+                Console.WriteLine("3. Ta ut pengar");
+                Console.WriteLine("4. Logga ut");
 
+                string choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        ViewAccounts(username);
+                        break;
+                    case "2":
+                        TransferMoney(username); 
+                        break;
+                    case "3":
+                        WithdrawMoney(username);
+                        break;
+                    case "4":
+                        return;
+                    default:
+                        Console.WriteLine("Ogiltligt val välj mellan 1-4");
+                        break;
+                }
+            }
         }
 
-        public void ViewAccounts()
+        public void ViewAccounts(string username)
         {
-
+            Console.Clear();
+            Console.WriteLine("Hej");
         }
 
-        public void TransferMoney()
+        public void TransferMoney(string username)
         {
-
+            Console.Clear();
+            Console.WriteLine("Hej");
         }
-        public void WithdrawMoney()
+        public void WithdrawMoney(string username)
         {
-
+            Console.Clear();
+            Console.WriteLine("Hej");
         }
     }
     internal class Program
