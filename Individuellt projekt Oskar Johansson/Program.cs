@@ -26,7 +26,7 @@
 
         public string LogIn()
         {
-            int LogInAttempts = 3;
+            int LogInAttempts = 0;
             string username, pin;
 
             do
@@ -42,14 +42,15 @@
                 }
                 else
                 {
-                    LogInAttempts--;
-                    Console.WriteLine($"Fel användarnamn eller pin. Försök igen. du har {LogInAttempts} kvar");
+                    LogInAttempts++;
+                    Console.WriteLine($"Fel användarnamn eller pin. Försök igen.");
+                    Console.WriteLine($"Dina försök är: {LogInAttempts} av 3 möjliga försök.");
                 }
             }
             
-            while (LogInAttempts >= 0);
+            while (LogInAttempts < 3);
 
-            Console.WriteLine("Du har skrivit in fel pinkod tre gånger. Programmet kommer att avslutas nu.");
+            Console.WriteLine("Du har inga försök kvar. Programmet kommer nu att avslutas.");
             Environment.Exit(0);
             return null;
 
