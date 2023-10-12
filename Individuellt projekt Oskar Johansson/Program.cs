@@ -32,9 +32,9 @@
             do
             {
                 Console.WriteLine("Ange ditt användarnamn: ");
-                username = Console.ReadLine();
+                username = Console.ReadLine().ToLower();
                 Console.WriteLine("Ange din pinkod: ");
-                pin = Console.ReadLine();
+                pin = Console.ReadLine().ToLower();
 
                 if (SuccessfulLogIn(username, pin))
                 {
@@ -57,6 +57,8 @@
         }
         private bool SuccessfulLogIn(string username, string pin)
         {
+            username = username.ToLower();
+            pin = pin.ToLower();
             for(int i = 0;i < UserNames.Length;i++)
             {
                 if (UserNames[i] == username && Pins[i] == pin)
