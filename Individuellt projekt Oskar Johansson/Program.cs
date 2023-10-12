@@ -1,8 +1,10 @@
-﻿namespace Individuellt_projekt_Oskar_Johansson
+﻿using System.Runtime.CompilerServices;
+
+namespace Individuellt_projekt_Oskar_Johansson
 {
     class ATM
     {
-        private string[] UserNames = { "Oskar", "Emilia", "Vilgot", "Fia", "Felix" };
+        private string[] UserNames = { "oskar", "emilia", "vilgot", "fia", "felix" };
         private string[] Pins = { "2233", "1122", "1234", "0000", "1111" };
         private string[] AccountNames = { "Primärtkonto", "Sparkonto" };
         private double[][] AccountsBalances = new double[5][];
@@ -43,6 +45,7 @@
                 else
                 {
                     LogInAttempts++;
+                    Console.Clear();
                     Console.WriteLine($"Fel användarnamn eller pin. Försök igen.");
                     Console.WriteLine($"Dina försök är: {LogInAttempts} av 3 möjliga försök.");
                 }
@@ -55,7 +58,7 @@
             return null;
 
         }
-        private bool SuccessfulLogIn(string username, string pin)
+        public bool SuccessfulLogIn(string username, string pin)
         {
             username = username.ToLower();
             pin = pin.ToLower();
@@ -74,10 +77,10 @@
             while(true)
             {
                 Console.WriteLine("\nHuvudmeny:");
-                Console.WriteLine("1. Se konton och saldo");
-                Console.WriteLine("2. Överföring mellan konton");
-                Console.WriteLine("3. Ta ut pengar");
-                Console.WriteLine("4. Logga ut");
+                Console.WriteLine("[1] Se konton och saldo");
+                Console.WriteLine("[2] Överföring mellan konton");
+                Console.WriteLine("[3] Ta ut pengar");
+                Console.WriteLine("[4] Logga ut");
 
                 string choice = Console.ReadLine();
                 switch (choice)
@@ -107,14 +110,47 @@
             int UserIndex =  Array.IndexOf(UserNames, username);
             for (int i = 0; i < AccountNames.Length; i++)
             {
-                Console.WriteLine($"{AccountNames[i]}: {AccountsBalances[UserIndex][i]:C}");
+                Console.WriteLine($"{AccountNames[i]}: {AccountsBalances[UserIndex][i]} kr");
+                
             }
+
         }
 
         public void TransferMoney(string username)
         {
             Console.Clear();
-            Console.WriteLine("Hej");
+            Console.WriteLine("\nÖverföring mellan konton:");
+            ViewAccounts(username);
+            int UserIndex = Array.IndexOf(UserNames, username);
+
+            Console.WriteLine("Välj konto att ta pengar från: ");
+            string FromAccount = Console.ReadLine();
+
+            Console.WriteLine("Välj konto att ta pengar ifrån: ");
+            string ToAccount = Console.ReadLine();
+
+            Console.WriteLine("Ange summan att överföra: ");
+            double Amount = double.Parse(Console.ReadLine());
+
+            int FromAccountIndex = Array.IndexOf(AccountNames, FromAccount);
+            int ToAccountIndex = Array.IndexOf(AccountNames, ToAccount);
+
+            if (FromAccountIndex != -1 && ToAccountIndex != -1 && AccountsBalances[UserIndex][FromAccountIndex] >= Amount)
+            {
+                AccountsBalances[UserIndex][FromAccountIndex] -= Amount;
+                AccountsBalances[UserIndex][ToAccountIndex] += Amount;
+                Console.WriteLine($"{Amount} kr överför från {FromAccount} till {ToAccount}.");
+                Console.WriteLine("Nya saldon:");
+                ViewAccounts(username);
+
+            }
+            else
+            {
+                Console.WriteLine("Ogiltlig överföring");
+            }
+            Console.WriteLine("Tryck på enter för att komma till huvudmenyn");
+            Console.ReadLine();
+
         }
         public void WithdrawMoney(string username)
         {
