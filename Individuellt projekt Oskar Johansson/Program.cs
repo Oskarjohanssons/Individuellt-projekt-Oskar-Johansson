@@ -2,14 +2,14 @@
 {
     class ATM
     {
-        private string[] UserName = { "Oskar", "Emilia", "Vilgot", "Fia", "Felix" };
+        private string[] UserNames = { "Oskar", "Emilia", "Vilgot", "Fia", "Felix" };
         private string[] Pins = { "2233", "1122", "1234", "0000", "1111" };
         private string[] AccountNames = { "Primärtkonto", "Sparkonto" };
         private double[][] AccountsBalances = new double[5][];
 
         public ATM()
         {
-            for (int i = 0; i < UserName.Length; i++)
+            for (int i = 0; i < UserNames.Length; i++)
             {
                 AccountsBalances[i] = new double[2];
                 for (int j = 0; j < 2; j++)
@@ -57,9 +57,9 @@
         }
         private bool SuccessfulLogIn(string username, string pin)
         {
-            for(int i = 0;i < UserName.Length;i++)
+            for(int i = 0;i < UserNames.Length;i++)
             {
-                if (UserName[i] == username && Pins[i] == pin)
+                if (UserNames[i] == username && Pins[i] == pin)
                 {
                     return true;
                 }
@@ -101,7 +101,12 @@
         public void ViewAccounts(string username)
         {
             Console.Clear();
-            Console.WriteLine("Hej");
+            Console.WriteLine($"\nKonton och saldo för {username}:");
+            int UserIndex =  Array.IndexOf(UserNames, username);
+            for (int i = 0; i < AccountNames.Length; i++)
+            {
+                Console.WriteLine($"{AccountNames[i]}: {AccountsBalances[UserIndex][i]:C}");
+            }
         }
 
         public void TransferMoney(string username)
