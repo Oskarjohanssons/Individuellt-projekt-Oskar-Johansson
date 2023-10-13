@@ -4,7 +4,7 @@ namespace Individuellt_projekt_Oskar_Johansson
 {
     class ATM
     {
-        private string[] UserNames = { "oskar", "emilia", "vilgot", "fia", "felix" };
+        private string[] UserNames = { "Oskar", "Emilia", "Vilgot", "Fia", "Felix" };
         private string[] Pins = { "2233", "1122", "1234", "0000", "1111" };
         private string[] AccountNames = { "Primärtkonto", "Sparkonto" };
         private double[][] AccountsBalances = new double[5][];
@@ -36,10 +36,9 @@ namespace Individuellt_projekt_Oskar_Johansson
                 Console.Clear();
                 Welcome();
                 Console.WriteLine("Ange ditt användarnamn: ");
-                username = Console.ReadLine().ToLower();
+                username = Console.ReadLine();
                 Console.WriteLine("Ange din pinkod: ");
-                pin = Console.ReadLine().ToLower();
-
+                pin = Console.ReadLine();
                 if (SuccessfulLogIn(username, pin))
                 {
                     return username;
@@ -47,9 +46,10 @@ namespace Individuellt_projekt_Oskar_Johansson
                 else
                 {
                     LogInAttempts++;
-                    Console.Clear();
                     Console.WriteLine($"Fel användarnamn eller pin. Försök igen.");
                     Console.WriteLine($"Dina försök är: {LogInAttempts} av 3 möjliga försök.");
+                    Thread.Sleep(2000);
+                    Console.Clear();
                 }
             }
             
@@ -62,8 +62,6 @@ namespace Individuellt_projekt_Oskar_Johansson
         }
         public bool SuccessfulLogIn(string username, string pin)
         {
-            username = username.ToLower();
-            pin = pin.ToLower();
             for(int i = 0;i < UserNames.Length;i++)
             {
                 if (UserNames[i] == username && Pins[i] == pin)
@@ -78,6 +76,8 @@ namespace Individuellt_projekt_Oskar_Johansson
         {
             while(true)
             {
+                Console.Clear();
+                Console.WriteLine($"Du är inloggad på: {username}");
                 Console.WriteLine("\nHuvudmeny:");
                 Console.WriteLine("[1] Se konton och saldo");
                 Console.WriteLine("[2] Överföring mellan konton");
@@ -97,7 +97,8 @@ namespace Individuellt_projekt_Oskar_Johansson
                         WithdrawMoney(username);
                         break;
                     case "4":
-                        LogIn();
+                        username=LogIn();
+                        MainMenu(username);
                         break;
                     default:
                         Console.Clear();
