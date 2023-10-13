@@ -33,6 +33,8 @@ namespace Individuellt_projekt_Oskar_Johansson
 
             do
             {
+                Console.Clear();
+                Welcome();
                 Console.WriteLine("Ange ditt användarnamn: ");
                 username = Console.ReadLine().ToLower();
                 Console.WriteLine("Ange din pinkod: ");
@@ -95,12 +97,21 @@ namespace Individuellt_projekt_Oskar_Johansson
                         WithdrawMoney(username);
                         break;
                     case "4":
-                        return;
+                        LogIn();
+                        break;
                     default:
+                        Console.Clear();
                         Console.WriteLine("Ogiltligt val välj mellan 1-4");
                         break;
                 }
+                
+                Console.WriteLine("");
+                Console.WriteLine("Tryck enter för att återgå till menyn.");
+                Console.ReadLine();
+                Console.Clear();
+                
             }
+            
         }
 
         public void ViewAccounts(string username)
@@ -148,14 +159,57 @@ namespace Individuellt_projekt_Oskar_Johansson
             {
                 Console.WriteLine("Ogiltlig överföring");
             }
-            Console.WriteLine("Tryck på enter för att komma till huvudmenyn");
-            Console.ReadLine();
+        
 
         }
         public void WithdrawMoney(string username)
         {
             Console.Clear();
-            Console.WriteLine("Hej");
+            Console.WriteLine("\nTa ut pengar");
+            Console.WriteLine("Ange din pinkod för att ta ut pengar: ");
+            string pin = Console.ReadLine();
+
+            if(SuccessfulLogIn(username, pin))
+            {
+                ViewAccounts(username);
+                int UserIndex = Array.IndexOf(UserNames, username);
+
+                Console.WriteLine("Välj konto att ta ut pengar från: ");
+                string Account = Console.ReadLine();
+
+                int AccountIndex = Array.IndexOf(AccountNames, Account);
+                if(AccountIndex != -1) 
+                {
+                    Console.WriteLine("Ange summan att ta ut: ");
+                    double Amount = double.Parse(Console.ReadLine());
+
+                    if (AccountsBalances[UserIndex][AccountIndex]>= Amount)
+                    {
+                        AccountsBalances[UserIndex][AccountIndex] -= Amount;
+                        Console.WriteLine($"{Amount} kr har tagits ut från {Account}.");
+                        Console.WriteLine($"Nya saldo {Account}: {AccountsBalances[UserIndex][AccountIndex]} kr");
+                    }
+                    else
+                    {
+                        Console.Clear();
+                        Console.WriteLine("Ogiltligt uttag.");
+                    }
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("Ogiltligt val.");
+   
+                }
+
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Fel pinkod.");
+            }
+            
+  
         }
     }
     internal class Program
