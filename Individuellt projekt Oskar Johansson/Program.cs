@@ -9,18 +9,18 @@ namespace Individuellt_projekt_Oskar_Johansson
         static string[] UserNames = { "Oskar", "Emilia", "Vilgot", "Fia", "Felix" }; 
         static string[] Pins = { "2233", "1122", "1234", "0000", "1111" };
         static string[][] AccountNames = {
-       new string[] { "Lönekonto", "Sparkonto", "Privatkonto", "Huskonto", "Semesterkonto" },
+       new string[] { "Lönekonto", "Matkonto", "Privatkonto", "Huskonto", "Semesterkonto" },
        new string[] { "Lönekonto", "Sparkonto", "Hundkonto", "Gårdkonto" },
        new string[] { "Lönekonto", "Sparkonto", "Leksakerkonto" },
        new string[] { "Lönekonto", "Hundgodiskonto" },
-       new string[] { "Lönekonto" }
+       new string[] { "Lönekonto", "Fondkonto" }
         };
         static decimal[][] AccountsBalances = { //Statiska arrayer för kontosaldo
        new decimal[] { 500.0m, 30000.0m, 5900.0m, 20000.0m, 10000.0m },
        new decimal[] { 300.0m, 200000.0m, 150000.0m, 60000.0m },
        new decimal[] { 25000.0m, 46000.0m, 450000.0m },
        new decimal[] { 100.0m, 100000.0m },
-       new decimal[] { 90000.0m}
+       new decimal[] { 90000.0m, 733200.0m}
         };
 
 
@@ -99,12 +99,12 @@ namespace Individuellt_projekt_Oskar_Johansson
                         WithdrawMoney(username);
                         break;
                     case "4":
-                        username = LogIn(); //Logga ut och gå tillbaka till inloggning så man kan byta användarnamn
+                        username = LogIn(); //Logga ut och gå tillbaka till inloggning så man kan byta användare
                         MainMenu(username); //Återgå till huvudmenyn med det nya användarnamnet
                         break;
                     default:
                         Console.Clear();
-                        Console.WriteLine("Ogiltligt val välj mellan 1-4");
+                        Console.WriteLine("Ogiltligt val, välj mellan 1-4");
                         break;
                 }
 
@@ -199,9 +199,10 @@ namespace Individuellt_projekt_Oskar_Johansson
                     string pin = Console.ReadLine();
                     if (SuccessfulLogIn(username, pin))
                     {
+                         
                         if (AccountsBalances[userIndex][accountIndex] >= amount) //Kontrollerar om kontots saldo är tillräckligt för uttag
                         {
-                            {
+                            
                             AccountsBalances[userIndex][accountIndex] -= amount; //Minskar saldot med det uttagna beloppet
                             Console.WriteLine($"{amount} kr har tagits ut från {account}.");
                             Console.WriteLine($"Nya saldo {account}: {AccountsBalances[userIndex][accountIndex]} kr");
