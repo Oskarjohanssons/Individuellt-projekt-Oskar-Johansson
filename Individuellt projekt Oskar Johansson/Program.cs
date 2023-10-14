@@ -1,25 +1,28 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+
 
 namespace Individuellt_projekt_Oskar_Johansson
 {
     class ATM
     {
-        private string[] UserNames = { "Oskar", "Emilia", "Vilgot", "Fia", "Felix" };
-        private string[] Pins = { "2233", "1122", "1234", "0000", "1111" };
-        private string[] AccountNames = { "Primärtkonto", "Sparkonto" };
-        private double[][] AccountsBalances = new double[5][];
+        static string[] UserNames = { "Oskar", "Emilia", "Vilgot", "Fia", "Felix" };
+        static string[] Pins = { "2233", "1122", "1234", "0000", "1111" };
+        static string[][] AccountNames = {
+       new string[] { "Lönekonto", "Sparkonto", "Privatkonto", "Huskonto", "Semesterkonto" },
+       new string[] { "Lönekonto", "Sparkonto", "Hundkonto", "Gårdkonto" },
+       new string[] { "Lönekonto", "Sparkonto", "Leksakerkonto" },
+       new string[] { "Lönekonto", "Hundgodiskonto" },
+       new string[] { "Lönekonto" }
+        };
+        static decimal[][] AccountsBalances = {
+       new decimal[] { 500.0m, 30000.0m, 5900.0m, 20000.0m, 10000.0m },
+       new decimal[] { 300.0m, 200000.0m, 150000.0m, 60000.0m },
+       new decimal[] { 25000.0m, 46000.0m, 450000.0m },
+       new decimal[] { 100.0m, 100000.0m },
+       new decimal[] { 90000.0m}
+        };
 
-        public ATM()
-        {
-            for (int i = 0; i < UserNames.Length; i++)
-            {
-                AccountsBalances[i] = new double[2];
-                for (int j = 0; j < 2; j++)
-                {
-                    AccountsBalances[i][j] = 100.0;
-                }
-            }
-        }
+
 
         public void Welcome()
         {
@@ -48,11 +51,11 @@ namespace Individuellt_projekt_Oskar_Johansson
                     LogInAttempts++;
                     Console.WriteLine($"Fel användarnamn eller pin. Försök igen.");
                     Console.WriteLine($"Dina försök är: {LogInAttempts} av 3 möjliga försök.");
-                    Thread.Sleep(2000);
+                    Thread.Sleep(2500);
                     Console.Clear();
                 }
             }
-            
+
             while (LogInAttempts < 3);
 
             Console.WriteLine("Du har inga försök kvar. Programmet kommer nu att avslutas.");
@@ -62,19 +65,17 @@ namespace Individuellt_projekt_Oskar_Johansson
         }
         public bool SuccessfulLogIn(string username, string pin)
         {
-            for(int i = 0;i < UserNames.Length;i++)
+            int index = Array.IndexOf(UserNames, username);
+            if (index != -1 && Pins[index] == pin)
             {
-                if (UserNames[i] == username && Pins[i] == pin)
-                {
-                    return true;
-                }
+                return true;
             }
             return false;
         }
 
         public void MainMenu(string username)
         {
-            while(true)
+            while (true)
             {
                 Console.Clear();
                 Console.WriteLine($"Du är inloggad på: {username}");
@@ -91,13 +92,13 @@ namespace Individuellt_projekt_Oskar_Johansson
                         ViewAccounts(username);
                         break;
                     case "2":
-                        TransferMoney(username); 
+                        TransferMoney(username);
                         break;
                     case "3":
                         WithdrawMoney(username);
                         break;
                     case "4":
-                        username=LogIn();
+                        username = LogIn();
                         MainMenu(username);
                         break;
                     default:
@@ -105,123 +106,141 @@ namespace Individuellt_projekt_Oskar_Johansson
                         Console.WriteLine("Ogiltligt val välj mellan 1-4");
                         break;
                 }
-                
+
                 Console.WriteLine("");
                 Console.WriteLine("Tryck enter för att återgå till menyn.");
                 Console.ReadLine();
                 Console.Clear();
-                
+
             }
-            
+
         }
 
         public void ViewAccounts(string username)
         {
             Console.Clear();
-            Console.WriteLine($"\nKonton och saldo för {username}:");
-            int UserIndex =  Array.IndexOf(UserNames, username);
-            for (int i = 0; i < AccountNames.Length; i++)
-            {
-                Console.WriteLine($"{AccountNames[i]}: {AccountsBalances[UserIndex][i]} kr");
-                
-            }
+            Console.WriteLine($"Konton och saldo för {username}:");
 
+            int userIndex = Array.IndexOf(UserNames, username);
+            if (userIndex != -1)
+            {
+                for (int i = 0; i < AccountNames[userIndex].Length; i++)
+                {
+                    Console.WriteLine($"{AccountNames[userIndex][i]}: {AccountsBalances[userIndex][i]} kr");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Användarnamn hittades inte.");
+            }
         }
+
 
         public void TransferMoney(string username)
         {
             Console.Clear();
-            Console.WriteLine("\nÖverföring mellan konton:");
+            Console.WriteLine("Överföring mellan konton:");
             ViewAccounts(username);
-            int UserIndex = Array.IndexOf(UserNames, username);
+
+            int userIndex = Array.IndexOf(UserNames, username);
 
             Console.WriteLine("Välj konto att ta pengar från: ");
-            string FromAccount = Console.ReadLine();
+            string fromAccount = Console.ReadLine();
 
-            Console.WriteLine("Välj konto att ta pengar ifrån: ");
-            string ToAccount = Console.ReadLine();
+            Console.WriteLine("Välj konto att överföra till: ");
+            string toAccount = Console.ReadLine();
 
             Console.WriteLine("Ange summan att överföra: ");
-            double Amount = double.Parse(Console.ReadLine());
-
-            int FromAccountIndex = Array.IndexOf(AccountNames, FromAccount);
-            int ToAccountIndex = Array.IndexOf(AccountNames, ToAccount);
-
-            if (FromAccountIndex != -1 && ToAccountIndex != -1 && AccountsBalances[UserIndex][FromAccountIndex] >= Amount)
+            decimal amount;
+            if (decimal.TryParse(Console.ReadLine(), out amount))
             {
-                AccountsBalances[UserIndex][FromAccountIndex] -= Amount;
-                AccountsBalances[UserIndex][ToAccountIndex] += Amount;
-                Console.WriteLine($"{Amount} kr överför från {FromAccount} till {ToAccount}.");
-                Console.WriteLine("Nya saldon:");
-                ViewAccounts(username);
+                int fromAccountIndex = Array.IndexOf(AccountNames[userIndex], fromAccount);
+                int toAccountIndex = Array.IndexOf(AccountNames[userIndex], toAccount);
 
+                if (fromAccountIndex != -1 && toAccountIndex != -1 &&
+                    AccountsBalances[userIndex][fromAccountIndex] >= amount)
+                {
+                    AccountsBalances[userIndex][fromAccountIndex] -= amount;
+                    AccountsBalances[userIndex][toAccountIndex] += amount;
+                    Console.WriteLine($"{amount} kr överförd från {fromAccount} till {toAccount}.");
+                    Console.WriteLine("Nya saldon:");
+                    ViewAccounts(username);
+                }
+                else
+                {
+                    Console.WriteLine("Ogiltig överföring.");
+                }
             }
             else
             {
-                Console.WriteLine("Ogiltlig överföring");
+                Console.WriteLine("Ogiltigt belopp.");
             }
-        
-
         }
         public void WithdrawMoney(string username)
         {
             Console.Clear();
-            Console.WriteLine("\nTa ut pengar");
-            Console.WriteLine("Ange din pinkod för att ta ut pengar: ");
-            string pin = Console.ReadLine();
+            Console.WriteLine("Ta ut pengar");
+            ViewAccounts(username);
+            int userIndex = Array.IndexOf(UserNames, username);
 
-            if(SuccessfulLogIn(username, pin))
+            Console.WriteLine("Välj konto att ta ut pengar från: ");
+            string account = Console.ReadLine();
+
+            int accountIndex = Array.IndexOf(AccountNames[userIndex], account);
+            if (accountIndex != -1)
             {
-                ViewAccounts(username);
-                int UserIndex = Array.IndexOf(UserNames, username);
-
-                Console.WriteLine("Välj konto att ta ut pengar från: ");
-                string Account = Console.ReadLine();
-
-                int AccountIndex = Array.IndexOf(AccountNames, Account);
-                if(AccountIndex != -1) 
+                Console.WriteLine("Ange summan att ta ut: ");
+                decimal amount;
+                if (decimal.TryParse(Console.ReadLine(), out amount))
                 {
-                    Console.WriteLine("Ange summan att ta ut: ");
-                    double Amount = double.Parse(Console.ReadLine());
-
-                    if (AccountsBalances[UserIndex][AccountIndex]>= Amount)
+                    Console.WriteLine("Ange din pinkod för att ta ut pengar: ");
+                    string pin = Console.ReadLine();
+                    if (SuccessfulLogIn(username, pin))
                     {
-                        AccountsBalances[UserIndex][AccountIndex] -= Amount;
-                        Console.WriteLine($"{Amount} kr har tagits ut från {Account}.");
-                        Console.WriteLine($"Nya saldo {Account}: {AccountsBalances[UserIndex][AccountIndex]} kr");
+                        if (AccountsBalances[userIndex][accountIndex] >= amount)
+                        {
+                            AccountsBalances[userIndex][accountIndex] -= amount;
+                            Console.WriteLine($"{amount} kr har tagits ut från {account}.");
+                            Console.WriteLine($"Nya saldo {account}: {AccountsBalances[userIndex][accountIndex]} kr");
+                        }
+                        else
+                        {
+                            Console.Clear();
+                            Console.WriteLine("Otillräckligt saldo.");
+                        }
+
                     }
                     else
                     {
                         Console.Clear();
-                        Console.WriteLine("Ogiltligt uttag.");
+                        Console.WriteLine("Fel pinkod.");
                     }
+
                 }
                 else
                 {
                     Console.Clear();
-                    Console.WriteLine("Ogiltligt val.");
-   
+                    Console.WriteLine("Ogiltigt belopp.");
                 }
-
             }
             else
             {
                 Console.Clear();
-                Console.WriteLine("Fel pinkod.");
+                Console.WriteLine("Ogiltigt kontoval.");
             }
             
-  
-        }
-    }
-    internal class Program
-    {
-        static void Main(string[] args)
-        {
-            ATM Bank = new ATM();
-            Bank.Welcome();
-            string username = Bank.LogIn();
-            Bank.MainMenu(username);
-        }
 
+        }
+        internal class Program
+        {
+            static void Main(string[] args)
+            {
+                ATM Bank = new ATM();
+                Bank.Welcome();
+                string username = Bank.LogIn();
+                Bank.MainMenu(username);
+            }
+
+        }
     }
 }
