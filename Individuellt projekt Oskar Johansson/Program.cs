@@ -25,7 +25,7 @@ namespace Individuellt_projekt_Oskar_Johansson
 
 
 
-        public void Welcome() // Välkomstmeddelande för användaren
+        public void Welcome() // Välkomstmeddelande för användaren 
         {
             Console.WriteLine("Välkommen till din bank");
         }
